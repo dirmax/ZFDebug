@@ -130,25 +130,31 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Cache
         }
 
         foreach ($this->_cacheBackends as $name => $backend) {
-            $fillingPercentage = $backend->getFillingPercentage();
-            $ids = $backend->getIds();
 
-            # Print full class name, backends might be custom
-            $panel .= '<h4>Cache '.$name.' ('.get_class($backend).')</h4>';
-            $panel .= count($ids).' Entr'.(count($ids)>1?'ies':'y').''.$linebreak
-                    . 'Filling Percentage: '.$backend->getFillingPercentage().'%'.$linebreak;
+			$panel .= '<h4>Cache '.$name.' ('.get_class($backend).')</h4>';
+			
+			try {
+	            $fillingPercentage = $backend->getFillingPercentage();
+	            $ids = $backend->getIds();
 
-            $cacheSize = 0;
-            foreach ($ids as $id) {
-                # Calculate valid cache size
-                $memPre = memory_get_usage();
-                if ($cached = $backend->load($id)) {
-                    $memPost = memory_get_usage();
-                    $cacheSize += $memPost - $memPre;
-                    unset($cached);
-                }
-            }
-            $panel .= 'Valid Cache Size: ' . round($cacheSize/1024, 1) . 'K';
+	            # Print full class name, backends might be custom
+	            $panel .= count($ids).' Entr'.(count($ids)>1?'ies':'y').''.$linebreak
+	                    . 'Filling Percentage: '.$backend->getFillingPercentage().'%'.$linebreak;
+
+	            $cacheSize = 0;
+	            foreach ($ids as $id) {
+	                # Calculate valid cache size
+	                $memPre = memory_get_usage();
+	                if ($cached = $backend->load($id)) {
+	                    $memPost = memory_get_usage();
+	                    $cacheSize += $memPost - $memPre;
+	                    unset($cached);
+	                }
+	            }
+	            $panel .= 'Valid Cache Size: ' . round($cacheSize/1024, 1) . 'K';
+			}
+			catch (Exception $e) { }
+
         }
         return $panel;
     }
