@@ -85,10 +85,14 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Database
         if (!$this->_db)
             return 'No adapter';
 
+		$i = 0;
         foreach ($this->_db as $adapter) {
             $profiler = $adapter->getProfiler();
-            $adapterInfo[] = $profiler->getTotalNumQueries() . ' in '
-                           . round($profiler->getTotalElapsedSecs()*1000, 2) . ' ms';
+			if ($profiler->getTotalNumQueries() > 0 || $i == 0) {
+            	$adapterInfo[] = $profiler->getTotalNumQueries() . ' in '
+                           	. round($profiler->getTotalElapsedSecs()*1000, 2) . ' ms';
+			}
+			$i++;
         }
         $html = implode(' / ', $adapterInfo);
 
