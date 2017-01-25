@@ -221,7 +221,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
             }
 
             /* @var $plugin ZFDebug_Controller_Plugin_Debug_Plugin_Interface */
-            $showPanel = ($plugin->getPanel() == '') ? 'log' : $plugin->getIdentifier();
+            $showPanel = (!$plugin->getPanel()) ? false : $plugin->getIdentifier();
             $html .= "\t".'<span id="ZFDebugInfo_'.$plugin->getIdentifier()
                    . '" class="ZFDebug_span clickable" onclick="ZFDebugPanel(\'ZFDebug_'
                    . $showPanel . '\');">' . "\n";
@@ -417,6 +417,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
                        background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAyCAMAAABSxbpPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACFQTFRFFhYWIyMjGhoaHBwcJSUlExMTFBQUHx8fISEhGBgYJiYmWIZXxwAAAC5JREFUeNrsxskNACAMwLBAucr+A/OLWAEJv0wXQ1xSVBFiiiWKaGLr96EeAQYA2KMRY8RL/qEAAAAASUVORK5CYII=) }
         #ZFDebug #ZFDebugResize {cursor:row-resize; height:1px; border-top:1px solid #1a1a1a;border-bottom:1px solid #333333; }
         #ZFDebug .ZFDebug_span {padding:0 15px; line-height:32px; display:block; float:left}
+        #ZFDebug .ZFDebug_span img {width: 16px; height: 16px;}
         #ZFDebug .ZFDebug_panel {padding:0px 15px 15px 15px;
                         font: 11px/1.4em Menlo, Monaco, Lucida Console, monospace;
                         text-align:left; height:'.($boxheight-50).'px; overflow:auto; display:none; }
@@ -471,7 +472,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
         var ZFDebugCurrent = null;
 
         function ZFDebugPanel(name) {
-            if (ZFDebugCurrent == name) {
+            if (ZFDebugCurrent == name || !document.getElementById("ZFDebugInfo_"+name.substring(8))) {
                 document.getElementById("ZFDebug").style.height = "32px";
                 document.getElementById("ZFDebug_offset").style.height = "32px";
                 ZFDebugCurrent = null;
